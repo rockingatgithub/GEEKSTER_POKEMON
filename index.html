@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <div>
+        GeekPok
+
+        <input type="text" id="pokemon-name" />
+        <button onclick="pokemonNameSearchHandler()"> Search </button>
+
+    </div>
+
+    <script>
+
+        function pokemonNameSearchHandler () {
+
+            const pokemonName = document.getElementById('pokemon-name').value
+
+            fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`)
+            
+            .then( response => response.json() )
+
+            .then( parsedResponse => {
+
+                console.log("parsedResponse", parsedResponse)
+
+            } )
+
+
+        }
+
+
+    </script>
+    
+</body>
+</html>
