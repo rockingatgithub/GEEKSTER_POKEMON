@@ -21,12 +21,13 @@
 
     <div> 
         <select id="pokemon-types">
-
-
-
         </select>
         <button onclick="fetchPokemonOnType()" > Filter by Type </button>
 
+    </div>
+
+    <div>
+        <input type="text" id="search" />  <button> Search </button>
     </div>
 
     <div id="pokemons-list" >
@@ -40,8 +41,11 @@
 
         const pokenmonTypeURL = 'https://pokeapi.co/api/v2/type/'
 
+        const pokemonSearchURL = 'https://pokeapi.co/api/v2/pokemon' + 'pokemonName'
+
         const NameURLMap = {}
 
+        // get all pokemon types and add to select tag
         function fetchPokenmonType () {
 
             fetch(pokenmonTypeURL)
@@ -72,6 +76,7 @@
 
         }
 
+        // this function fetches 10 pokemons based on the type
         function fetchPokemonOnType () {
 
             console.log(NameURLMap)
@@ -123,6 +128,7 @@
         }
 
 
+        // this will return pokemon image based on the URL...
         async function fetchPokemonData (pokemonURL) {
 
             const response = await fetch(pokemonURL)
