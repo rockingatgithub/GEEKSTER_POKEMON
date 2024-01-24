@@ -46,86 +46,72 @@
         const NameURLMap = {}
 
         // get all pokemon types and add to select tag
-        function fetchPokenmonType () {
+        async function fetchPokenmonType () {
 
-            fetch(pokenmonTypeURL)
-            .then (
-                ( response ) => response.json()
-            )
-            .then(
-                ( parsedResponse ) => {
+            const response = await fetch(pokenmonTypeURL)
 
-                    console.log(parsedResponse)
+            const parsedResponse = await response.json()
+            
+            console.log(parsedResponse)
+            const select = document.getElementById('pokemon-types')
 
-                    const select = document.getElementById('pokemon-types')
+            for (let i = 0; i < parsedResponse.results.length; i++) {
+                
+                const type = parsedResponse.results[i];
+                const typeName = type.name
+                const typeURL = type.url
+                NameURLMap[typeName] = typeURL
 
-                    for (let i = 0; i < parsedResponse.results.length; i++) {
-                        const type = parsedResponse.results[i];
-                        const typeName = type.name
-                        const typeURL = type.url
-                        NameURLMap[typeName] = typeURL
-                        const option = document.createElement('option')
-                        option.innerText = typeName
-                        option.setAttribute('value', typeName)
-                        option.setAttribute('data-url', typeURL)
-                        select.append(option)
-                    }
+                const option = document.createElement('option')
+                option.innerText = typeName
+                option.setAttribute('value', typeName)
+                option.setAttribute('data-url', typeURL)
+                select.append(option)
 
-                }
-            )
+            }  
 
         }
 
         // this function fetches 10 pokemons based on the type
-        function fetchPokemonOnType () {
+        async function fetchPokemonOnType () {
 
-            console.log(NameURLMap)
             const selectValue = document.getElementById('pokemon-types').value
-            console.log("the select value\n\n", selectValue, NameURLMap[selectValue])
 
-            fetch(NameURLMap[selectValue])
-            .then (( response )  => response.json())
-            .then((parsedResponse) => {
+            const response = await  fetch(NameURLMap[selectValue])
+            const parsedResponse = await response.json()
 
-                const pokemonsData = parsedResponse.pokemon
+            const pokemonsData = parsedResponse.pokemon
 
-                const pokemonsListLength = pokemonsData.length > 10 ? 10 : pokemonsData.length
+            const pokemonsListLength = pokemonsData.length > 10 ? 10 : pokemonsData.length
+            const pokemonBox = document.getElementById('pokemons-list')
+            pokemonBox.innerHTML = ''
 
-                const pokemonBox = document.getElementById('pokemons-list')
-                pokemonBox.innerHTML = ''
+            for (let i = 0; i < pokemonsListLength; i++) {
 
-                for (let i = 0; i < pokemonsListLength; i++) {
+                const pokemon = pokemonsData[i].pokemon;
+                const pokemonName = pokemon.name
+                const pokemonURL = pokemon.url
+                let imageSrcData = ''
 
-                    const pokemon = pokemonsData[i].pokemon;
-                    const pokemonName = pokemon.name
-                    const pokemonURL = pokemon.url
-                    let imageSrcData = ''
-                    fetchPokemonData(pokemonURL).then( imageSrc => {
+                const imageSrc = await fetchPokemonData(pokemonURL)
 
+                const pokemonDiv = document.createElement('div')
+                const pokemonFrontPicture = document.createElement('img')
+                const pokemonNameSpan = document.createElement('span')
 
-                        const pokemonDiv = document.createElement('div')
-                        const pokemonFrontPicture = document.createElement('img')
-                        const pokemonNameSpan = document.createElement('span')
+                pokemonFrontPicture.setAttribute('src', imageSrc)
 
-                        pokemonFrontPicture.setAttribute('src', imageSrc)
+                pokemonNameSpan.innerText = pokemonName
+                pokemonDiv.append(pokemonFrontPicture,  pokemonNameSpan)
 
-                        pokemonNameSpan.innerText = pokemonName
-                        pokemonDiv.append(pokemonFrontPicture,  pokemonNameSpan)
+                pokemonBox.append(pokemonDiv)
+                
+            }
 
-
-                        pokemonBox.append(pokemonDiv)
-
-
-                    } )
-
-
-                    
-                    
-                }
-
-            })
 
         }
+
+        console.log("after await")
 
 
         // this will return pokemon image based on the URL...
